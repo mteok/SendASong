@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">YouTubeExperiments</string>
+
+    <string name="app_id">805019786251798</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_player">PlayerActivity</string>
+
+    <string name="title_search">Search Video</string>
+    <string name="title_friends">Search Friends</string>
+
+    <string name="button_send">Share</string>
+    <string name="button_search">Search</string>
+    <string name="button_fb_login">Facebook Login</string>
+    <string name="button_guest_login">Guest</string>
+</resources>
