@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.experiments.teo.youtubeexperiments.fragments.FragmentFriendList;
 import com.experiments.teo.youtubeexperiments.fragments.HomeFragment;
@@ -25,6 +27,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphRequestBatch;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.scopely.fontain.Fontain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        PushSingleton.getInstance().setActivity(this);
         MainApp.setCurrentActivity(this);
     }
 
@@ -49,19 +53,24 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         EventBus.getDefault().register(this);
-        EventUI.goHome();
+        Fontain.init(this, "POLAR");
+
+        if (ParamsSingleton.getInstance().isFbLogged())
+            EventUI.goSearch();
+        else
+            EventUI.goHome();
     }
 
     public void onEvent(EventUI.Search ev) {
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new SearchFragment()).commit();
+        getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).replace(R.id.fragment_container, new SearchFragment(), SearchFragment.class.getName()).commit();
     }
 
     public void onEvent(EventUI.Home ev) {
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).replace(R.id.fragment_container, new HomeFragment(), HomeFragment.class.getName()).commit();
     }
 
     public void onEvent(EventUI.Profile ev) {
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+        getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(ProfileFragment.class.getName()).replace(R.id.fragment_container, new ProfileFragment(), ProfileFragment.class.getName()).commit();
     }
 
     public void onEvent(EventUI.VideoPage ev) {
@@ -71,7 +80,7 @@ public class MainActivity extends FragmentActivity {
 
     public void onEvent(EventUI.Share ev) {
         if (ParamsSingleton.getInstance().isFbLogged())
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentFriendList()).commit();
+            getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(FragmentFriendList.class.getName()).replace(R.id.fragment_container, new FragmentFriendList(), FragmentFriendList.class.getName()).commit();
         else {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/html");
@@ -131,26 +140,34 @@ public class MainActivity extends FragmentActivity {
     };
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
+    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+        if (ParamsSingleton.getInstance().isFbLogged()) {
+            invalidateOptionsMenu();
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.main_menu, menu);
+            return true;
+        }
+        return false;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
+            case R.id.action_profile:
                 EventUI.goProfile();
+                break;
+            case R.id.action_logout:
+                LoginManager.getInstance().logOut();
+                ParamsSingleton.getInstance().setFbLogged(false);
+                EventUI.goHome();
                 break;
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -162,6 +179,7 @@ public class MainActivity extends FragmentActivity {
         super.onDestroy();
         MainApp.setCurrentActivity(null);
         EventBus.getDefault().unregister(this);
+        PushSingleton.getInstance().setActivity(null);
     }
 
     @Override

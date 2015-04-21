@@ -1,15 +1,17 @@
 package com.experiments.teo.youtubeexperiments.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +57,7 @@ public class SearchFragment extends Fragment {
         listViewSearch.setAdapter(adapter);
         listViewSearch.setOnScrollListener(scrollListener);
         getActivity().getActionBar().setTitle(getString(R.string.title_search));
+        editSearch.setOnEditorActionListener(editListener);
         return rootView;
     }
 
@@ -90,13 +93,24 @@ public class SearchFragment extends Fragment {
         }
     };
 
+    private TextView.OnEditorActionListener editListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                search();
+                handled = true;
+            }
+            return handled;
+        }
+    };
+
 
     @OnClick(R.id.btn_search)
     protected void search() {
         searchingText = editSearch.getText().toString();
         NetworkUtils.searchVideo(searchingText, response);
     }
-
 
 
     private NetworkUtils.ResponseInterface response = new NetworkUtils.ResponseInterface() {

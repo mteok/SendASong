@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.experiments.teo.youtubeexperiments.MainActivity;
 import com.experiments.teo.youtubeexperiments.MainApp;
+import com.experiments.teo.youtubeexperiments.PlayerActivity;
+import com.experiments.teo.youtubeexperiments.PushSingleton;
 import com.experiments.teo.youtubeexperiments.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -64,12 +66,12 @@ public class PushIntentService extends IntentService {
              */
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
-                String message = intent.getStringExtra("sender_id");
-                Log.d("message", message);
-                if (MainApp.getCurrentActivity() != null)
-                    Toast.makeText(MainApp.getCurrentActivity(), "PUSH ARRIVED", Toast.LENGTH_LONG).show();
-                else {
+                String message = intent.getStringExtra("video_id");
+                if (PushSingleton.getInstance().getActivity() != null) {
+                    Log.d("message", message);
+                } else {
                     Log.d("push", "success");
+                    notification(message, message);
                 }
 
             } else if (messageType == null) {
@@ -81,7 +83,7 @@ public class PushIntentService extends IntentService {
         PushBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-    private static void notification(String message) {
+    private static void notification(String message, String videoId) {
         int icon = R.mipmap.ic_launcher;
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) MainApp.context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -89,8 +91,11 @@ public class PushIntentService extends IntentService {
 
         String title = MainApp.context.getString(R.string.app_name);
 
-        Intent notificationIntent = new Intent(MainApp.context, MainActivity.class);
+        Intent notificationIntent = new Intent(MainApp.context, PlayerActivity.class);
 
+        Bundle bundle = new Bundle();
+        bundle.putString("VideoId", videoId);
+        notificationIntent.putExtras(bundle);
         // set intent so it does not start a new activity
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

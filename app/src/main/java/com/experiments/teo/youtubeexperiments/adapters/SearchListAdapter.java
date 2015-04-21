@@ -85,6 +85,8 @@ public class SearchListAdapter extends BaseAdapter {
             public void onClick(View view) {
                 ParamsSingleton.getInstance().setSelectedVideoId(video.getYoutTubeId());
                 video.setIs_played(Calendar.getInstance().getTimeInMillis());
+                if (video.getIs_shared() == null)
+                    video.setIs_shared(new Long(0));
                 video.save();
                 EventUI.launchVideo();
             }
@@ -94,6 +96,8 @@ public class SearchListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 ParamsSingleton.getInstance().setSelectedVideoId(video.getYoutTubeId());
                 video.setIs_shared(Calendar.getInstance().getTimeInMillis());
+                if (video.getIs_played() == null)
+                    video.setIs_played(new Long(0));
                 video.save();
                 EventUI.goShare();
             }

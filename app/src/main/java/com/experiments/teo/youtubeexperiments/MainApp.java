@@ -10,7 +10,7 @@ import com.activeandroid.ActiveAndroid;
 /**
  * Created by teo on 4/7/15.
  */
-public class MainApp extends com.activeandroid.app.Application  {
+public class MainApp extends com.activeandroid.app.Application {
 
     public static Context context;
     public static final String API_KEY = "&key=AIzaSyDzqF1cOcufUSF-sIGsdCOEshwNj4Cmf4c";
@@ -21,6 +21,8 @@ public class MainApp extends com.activeandroid.app.Application  {
     public static final String PAGE_TOKEN = "&pageToken=";
 
     public static final String uTubeUrl = "https://www.youtube.com/watch?v=";
+
+
 
 
     public static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1001;

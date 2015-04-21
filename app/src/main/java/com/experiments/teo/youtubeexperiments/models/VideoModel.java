@@ -37,11 +37,11 @@ public class VideoModel extends Model {
     }
 
     public static List<VideoModel> getPlayedVideos() {
-        return new Select().from(VideoModel.class).where("is_played <> NULL ").orderBy("is_played ASC").execute();
+        return new Select().from(VideoModel.class).where("is_played <> 0 ").orderBy("is_played ASC").execute();
     }
 
     public static List<VideoModel> getSharedVideos() {
-        return new Select().from(VideoModel.class).where("is_shared <> NULL ").orderBy("is_shared ASC").execute();
+        return new Select().from(VideoModel.class).where("is_shared <> 0 ").orderBy("is_shared ASC").execute();
     }
 
     public Long getIs_played() {

@@ -1,9 +1,9 @@
 package com.experiments.teo.youtubeexperiments.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +66,8 @@ public class ProfileFragment extends Fragment {
         FBUser fbUser = ParamsSingleton.getInstance().getMe();
         imgProfile.setImageUrl(fbUser.getPicture().getData().get("url"), VolleySingleton.getInstance().getImageLoader());
         txtName.setText(fbUser.getName());
+
+        getActivity().getActionBar().setTitle(getString(R.string.title_profile));
         return rootView;
     }
 
