@@ -66,12 +66,14 @@ public class PushIntentService extends IntentService {
              */
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
-                String message = intent.getStringExtra("video_id");
+                String video_id = intent.getStringExtra("video_id");
+                String name = intent.getStringExtra("user_name");
                 if (PushSingleton.getInstance().getActivity() != null) {
-                    Log.d("message", message);
+                    Log.d("message", video_id);
                 } else {
                     Log.d("push", "success");
-                    notification(message, message);
+                    PushSingleton.getInstance().setNotificationMessage(video_id);
+                    notification(video_id, name);
                 }
 
             } else if (messageType == null) {
@@ -83,19 +85,17 @@ public class PushIntentService extends IntentService {
         PushBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-    private static void notification(String message, String videoId) {
+    private static void notification(String videoId, String name) {
         int icon = R.mipmap.ic_launcher;
         long when = System.currentTimeMillis();
         NotificationManager notificationManager = (NotificationManager) MainApp.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        String message = name + " " + MainApp.context.getString(R.string.notification_msg);
         Notification notification = new Notification(icon, message, when);
 
         String title = MainApp.context.getString(R.string.app_name);
 
         Intent notificationIntent = new Intent(MainApp.context, PlayerActivity.class);
 
-        Bundle bundle = new Bundle();
-        bundle.putString("VideoId", videoId);
-        notificationIntent.putExtras(bundle);
         // set intent so it does not start a new activity
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

@@ -25,4 +25,6 @@
     <string name="share_success">Video successfully shared with your friends</string>
     <string name="share_error">Error while sharing video</string>
 
+    <string name="notification_msg">send you a video</string>
+
 </resources>

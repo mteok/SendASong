@@ -39,7 +39,7 @@ public class NetworkUtils {
 
     static Gson gson = new Gson();
 
-    private static final String hostUrl = "http://192.168.1.17:3000";
+    private static final String hostUrl = "http://192.168.1.22:3000";
     private static final String login = "/users/login";
     private static final String shareUrl = "/push/sendPush";
 

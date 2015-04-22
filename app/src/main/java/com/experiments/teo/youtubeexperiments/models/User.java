@@ -14,9 +14,10 @@ public class User {
     @Expose
     private String user_name;
 
-    public User(String user_id, String gcm_id) {
+    public User(String user_id, String gcm_id,String user_name) {
         this.user_id = user_id;
         this.gcm_id = gcm_id;
+        this.user_name=user_name;
     }
 
     @Override

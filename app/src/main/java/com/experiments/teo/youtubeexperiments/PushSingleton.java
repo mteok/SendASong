@@ -7,6 +7,8 @@ public class PushSingleton {
 
     private static PushSingleton mInstance;
 
+    private static String notificationMessage;
+
     public static PushSingleton getInstance() {
         if (mInstance == null)
             mInstance = new PushSingleton();
@@ -21,5 +23,13 @@ public class PushSingleton {
 
     public void setActivity(MainActivity activity) {
         this.activity = activity;
+    }
+
+    public static String getNotificationMessage() {
+        return notificationMessage;
+    }
+
+    public static void setNotificationMessage(String notificationMessage) {
+        PushSingleton.notificationMessage = notificationMessage;
     }
 }

@@ -108,7 +108,6 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onSuccess(LoginResult loginResult) {
             MySharedPreferences.saveFbToken(loginResult.getAccessToken().getToken());
-            NetworkUtils.login(new User(loginResult.getAccessToken().getUserId(), null), loginResponse);
             NetworkUtils.facebookMeFriendsRequest(loginResult.getAccessToken(), onMeFriendsResult);
         }
 
@@ -135,7 +134,7 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onBatchCompleted(GraphRequestBatch graphRequests) {
             ParamsSingleton.getInstance().setFbLogged(true);
-            EventUI.goSearch();
+            NetworkUtils.login(new User(ParamsSingleton.getInstance().getMe().getId(), null, ParamsSingleton.getInstance().getMe().getName()), loginResponse);
         }
     };
 

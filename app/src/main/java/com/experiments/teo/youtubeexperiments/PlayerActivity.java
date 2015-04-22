@@ -12,7 +12,8 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 
 public class PlayerActivity extends YouTubeFailureRecoveryActivity {
 
-    String idFromBundle;
+    String idFromNotification;
+    String idFromSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +23,12 @@ public class PlayerActivity extends YouTubeFailureRecoveryActivity {
                 (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_fragment);
         youTubePlayerFragment.initialize(MainApp.API_PLAYER_KEY, this);
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null)
-            idFromBundle = bundle.getString("VideoId");
+        idFromNotification = PushSingleton.getInstance().getNotificationMessage();
 
-        Log.d("videoIdFromBundle", String.valueOf(idFromBundle));
+        idFromSearch = ParamsSingleton.getInstance().getSelectedVideoId();
+
+        Log.d("videoIdFromNotification", String.valueOf(idFromNotification));
+        Log.d("videoIdFromSearch", String.valueOf(idFromSearch));
     }
 
     @Override
@@ -37,9 +39,9 @@ public class PlayerActivity extends YouTubeFailureRecoveryActivity {
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         if (!b) {
-            if (idFromBundle != null && idFromBundle.length() > 0)
-                youTubePlayer.cueVideo(idFromBundle);
-            else
+            if (idFromNotification != null && idFromNotification.length() > 0)
+                youTubePlayer.cueVideo(idFromNotification);
+            else if (idFromSearch != null && idFromSearch.length() > 0)
                 youTubePlayer.cueVideo(ParamsSingleton.getInstance().getSelectedVideoId());
         }
     }
